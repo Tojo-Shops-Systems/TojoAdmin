@@ -92,7 +92,7 @@ export default function Dashboard() {
 
                 {/* User Profile */}
                 <div className="p-4 border-t border-zinc-800">
-                    <button className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-zinc-800 rounded-lg transition-colors">
+                    <Link href="/account" className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-zinc-800 rounded-lg transition-colors">
                         <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
                             <User size={16} className="text-zinc-400" />
                         </div>
@@ -100,7 +100,7 @@ export default function Dashboard() {
                             <p className="text-sm font-medium truncate">Jaret Eduardo</p>
                             <p className="text-xs text-zinc-500 truncate">Admin</p>
                         </div>
-                    </button>
+                    </Link>
                 </div>
             </aside>
         </>
