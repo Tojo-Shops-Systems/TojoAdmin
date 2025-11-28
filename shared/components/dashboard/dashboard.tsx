@@ -28,7 +28,7 @@ export default function Dashboard() {
             {/* Sidebar */}
             <aside
                 className={`
-          fixed top-0 left-0 h-screen w-full md:w-64 bg-zinc-900 text-white flex flex-col border-r border-zinc-800 z-50 transition-transform duration-300 ease-in-out
+          fixed top-0 left-0 h-[100dvh] w-full md:w-64 bg-zinc-900 text-white flex flex-col border-r border-zinc-800 z-50 transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
         `}
@@ -47,7 +47,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 p-4 space-y-2">
+                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
                     <Link
                         href="/"
                         onClick={() => setIsOpen(false)}
@@ -92,7 +92,11 @@ export default function Dashboard() {
 
                 {/* User Profile */}
                 <div className="p-4 border-t border-zinc-800">
-                    <Link href="/account" className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-zinc-800 rounded-lg transition-colors">
+                    <Link
+                        href="/account"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-zinc-800 rounded-lg transition-colors"
+                    >
                         <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center">
                             <User size={16} className="text-zinc-400" />
                         </div>
