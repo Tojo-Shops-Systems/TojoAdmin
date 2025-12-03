@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
     // 1. Intentar obtener la cookie segura
     // El navegador envía esto automáticamente si estás en el subdominio correcto
-    const token = request.cookies.get('auth_token')?.value;
+    const token = request.cookies.get('token')?.value;
 
     // URL a donde mandaremos a los intrusos (la tienda pública)
     const publicHomeUrl = new URL('https://www.tojoshop.com', request.url);
