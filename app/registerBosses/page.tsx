@@ -20,11 +20,6 @@ export default function RegisterBosses() {
     const handleSubmit = async () => {
         try {
             console.log("Submitting form...");
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.error("No token found");
-                return;
-            }
 
             const apiUrl = Env.registerPersonalDataBoss;
             console.log("API URL:", apiUrl);
@@ -39,8 +34,8 @@ export default function RegisterBosses() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     firstName,
                     lastName,

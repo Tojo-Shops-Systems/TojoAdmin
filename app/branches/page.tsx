@@ -32,13 +32,8 @@ export default function Branches() {
 
     const fetchBranches = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) return;
-
             const response = await fetch(Env.getBranches, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include'
             });
             const data = await response.json();
             if (data.result) {
@@ -61,18 +56,12 @@ export default function Branches() {
 
     const handleSubmit = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.error("No token found");
-                return;
-            }
-
             const response = await fetch(Env.createBranch, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     branchName,
                     address
