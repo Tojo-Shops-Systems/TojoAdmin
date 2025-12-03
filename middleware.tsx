@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
     try {
         // 3. SEGUNDO FILTRO: ¿Es un token válido y de un Jefe?
         // Llamamos a tu Backend (Laravel) para que nos diga quién es el dueño del token
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://tojosystemgroup.tech';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.tojoshop.com';
 
         const apiRes = await fetch(`${apiUrl}/api/user`, {
             method: 'GET',
