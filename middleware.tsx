@@ -2,55 +2,50 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-    const token = request.cookies.get('token')?.value;
-    const publicLoginUrl = new URL('https://www.tojoshop.com/auth', request.url);
+    const loginUrl = new URL('https://www.tojoshop.com/auth', request.url);
+    const homeUrl = new URL('https://www.tojoshop.com', request.url);
 
-    // --- LOG DE DIAGNÓSTICO ---
-    console.log('------------------------------------------------');
-    console.log('🔒 Middleware ejecutándose en:', request.url);
-    console.log('🍪 Cookie "token":', token ? 'ENCONTRADA (Oculta por seguridad)' : 'NO ENCONTRADA / NULL');
+    // 1. Obtenemos el string crudo de TODAS las cookies que envía el navegador
+    // (Aquí viene la HttpOnly 'token' encriptada y lista)
+    const allCookies = request.headers.get('cookie');
 
-    // 1. CHEQUEO DE COOKIE
-    if (!token) {
-        console.log('❌ RECHAZADO: No se encontró la cookie. Redirigiendo a login.');
-        return NextResponse.redirect(publicLoginUrl);
+    // Si el navegador no mandó cookies, ni intentamos.
+    if (!allCookies) {
+        return NextResponse.redirect(loginUrl);
     }
 
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.tojoshop.com';
-        console.log('📡 Conectando a API Laravel:', `${apiUrl}/api/user`);
 
+        // 2. Hacemos la petición a Laravel PASÁNDOLE LAS COOKIES
+        // Esto es el equivalente en servidor a `credentials: 'include'`
         const apiRes = await fetch(`${apiUrl}/api/user`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
+                'Cookie': allCookies, // <--- ¡AQUÍ ESTÁ LA CLAVE! Pasamos la cookie intacta
+                'Referer': request.url, // Ayuda a Sanctum a validar el origen
             },
         });
 
-        console.log('📡 Estado respuesta API:', apiRes.status);
-
+        // 3. Si Laravel dice que NO (401/403), es que la cookie no sirvió
         if (!apiRes.ok) {
-            const errorText = await apiRes.text();
-            console.log('❌ RECHAZADO: API devolvió error:', errorText);
-            return NextResponse.redirect(publicLoginUrl);
+            return NextResponse.redirect(loginUrl);
         }
 
+        // 4. Si pasó, verificamos el rol
         const userData = await apiRes.json();
-        const role = userData.role || userData.data?.role; // Ajusta según tu respuesta real
-        console.log('👤 Usuario:', userData.email, '| Rol:', role);
+        const role = userData.role || userData.data?.role;
 
         if (role !== 'CEO' && role !== 'RH') {
-            console.log('⛔ RECHAZADO: Rol insuficiente.');
-            return NextResponse.redirect(new URL('https://www.tojoshop.com', request.url));
+            return NextResponse.redirect(homeUrl);
         }
 
-        console.log('✅ APROBADO: Acceso concedido.');
         return NextResponse.next();
 
     } catch (error) {
-        console.error('💥 ERROR CRÍTICO:', error);
-        return NextResponse.redirect(publicLoginUrl);
+        console.error('Middleware Error:', error);
+        return NextResponse.redirect(loginUrl);
     }
 }
 
