@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
 
     // URL a donde mandaremos a los intrusos (la tienda pública)
     const publicHomeUrl = new URL('https://www.tojoshop.com', request.url);
-    const publicLoginUrl = new URL('https://www.tojoshop.com/login', request.url);
+    const publicLoginUrl = new URL('https://www.tojoshop.com/auth', request.url);
 
     // 2. PRIMER FILTRO: ¿Tiene token?
     if (!token) {
